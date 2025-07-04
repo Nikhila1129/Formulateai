@@ -2,10 +2,16 @@ import { Text, View,  StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image } from 'expo-image';
+import FloatingActionButton from '../../components/FloatingActionButton';
 
 const NoFormImage = require('@/assets/images/surveyor.png');
 
 export default function Index() {
+  const handleFabPress = () => {
+    console.log('FAB Pressed!');
+    // Example: navigate to a new screen
+    // router.push('/new-item'); // If using expo-router
+  };
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>

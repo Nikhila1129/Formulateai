@@ -5,6 +5,7 @@ import React, { ReactNode } from 'react';
 import { GestureResponderEvent } from 'react-native';
 import { TouchableOpacity, View, Platform, StyleSheet } from 'react-native';
 import CustomCreateFormButton from '../../components/CustomCreateFormButton'; // Adjust path as needed
+import { MaterialIcons } from '@expo/vector-icons';
 
 type CreateFormTabButtonProps = {
   children: ReactNode;
@@ -43,6 +44,7 @@ export default function TabLayout() {
         headerStyle: {
           backgroundColor: '#25292e',
         },
+        headerShown: false, // Show the header for all screens
         headerShadowVisible: false,
         headerTintColor: '#fff',
         tabBarStyle: {
@@ -53,11 +55,21 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="create-form"
         options={{
-          title: 'Home',
+          title: 'Builder',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'home-sharp' : 'home-outline'} color={color} size={24} />
+            <MaterialIcons name={focused ? 'mode-edit' : 'mode-edit'} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="preview"
+        options={{
+          headerShown: false, // Hide the header for this screen
+          title: 'Preview',
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'eye' : 'eye-outline'} color={color} size={24} />
           ),
         }}
       />
@@ -92,18 +104,19 @@ export default function TabLayout() {
           tabBarLabel: () => null, // Hide label
           tabBarIcon: () => null,
           tabBarButton: () => (
-            <CreateFormButton onPress={() => {router.push('../create-options-modal')}}>
+            <CreateFormButton onPress={() => {router.navigate('../form-questions-modal')}}>
               <Ionicons name='add' size={24} color="white"/>
             </CreateFormButton>
           )
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="submit"
         options={{
-          title: 'Settings',
+          headerShown: false,
+          title: 'Submit',
           tabBarIcon: ({ color, focused }) => (
-            <Ionicons name={focused ? 'information-circle' : 'information-circle-outline'} color={color} size={24}/>
+            <Ionicons name={focused ? 'send' : 'send-outline'} color={color} size={24}/>
           ),
         }}
       />
