@@ -104,7 +104,7 @@ export default function TabLayout() {
           tabBarLabel: () => null, // Hide label
           tabBarIcon: () => null,
           tabBarButton: () => (
-            <CreateFormButton onPress={() => {router.navigate('../form-questions-modal')}}>
+            <CreateFormButton onPress={() => {router.push('../form-questions-modal')}}>
               <Ionicons name='add' size={24} color="white"/>
             </CreateFormButton>
           )

@@ -1,17 +1,57 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Switch } from 'react-native';
+import { Alert, View, Text, TextInput, StyleSheet, TouchableOpacity, Switch } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you installed @expo/vector-icons
+import * as ImagePicker from 'expo-image-picker';
+import { Image } from 'react-native';
 
-const ShortAnswer = ({id}) => {
+
+
+const ShortAnswer = ({id, index, onDelete}) => {
   const [questionText, setQuestionText] = useState('');
   const [isRequired, setIsRequired] = useState(false);
   const [displayDescription, setDisplayDescription] = useState('hidden');
+  const [imageUri, setImageUri] = useState(null); 
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Delete Question',
+      'Are you sure you want to delete this question?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Delete', style: 'destructive', onPress: () => onDelete(id) },
+      ]
+    );
+  };
+  const handlePickImage = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'We need access to your photo library.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      setImageUri(result.assets[0].uri);
+    }
+};
+
 
   return (
     <>
       {/* Header Section: Question Number and Input */}
       <View style={styles.header}>
-        <Text style={styles.questionNumber}>{id}.</Text>
+        {imageUri && (
+        <Image
+          source={{ uri: imageUri }}
+          style={styles.attachedImage}
+        />
+      )}
+        <Text style={styles.questionNumber}>{index+1}{'.'}</Text>
         <TextInput
           style={styles.questionInput}
           onChangeText={setQuestionText}
@@ -59,20 +99,18 @@ const ShortAnswer = ({id}) => {
 
       {/* Action Buttons Section */}
       <View style={styles.actionButtonsContainer}>
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={handlePickImage}>
           <Ionicons name="attach" size={24} color="#666" />
           <Text style={styles.actionButtonText}>Attach</Text>
         </TouchableOpacity>
+        
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Ionicons name="git-branch-outline" size={24} color="#666" />
-          <Text style={styles.actionButtonText}>Logic</Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.actionButton}>
+        <TouchableOpacity style={styles.actionButton} onPress={handleDelete}>
           <Ionicons name="trash-outline" size={24} color="#666" />
           <Text style={styles.actionButtonText}>Delete</Text>
         </TouchableOpacity>
+
       </View>
     </>
   );
@@ -180,6 +218,13 @@ const styles = StyleSheet.create({
   descriptioninputContainer: {
     marginBottom: 20,
     width: '100%',
+  },
+  attachedImage: {
+    width: '100%',
+    height: 100,
+    borderRadius: 10,
+    marginBottom: 15,
+    resizeMode: 'cover',
   },
 });
 

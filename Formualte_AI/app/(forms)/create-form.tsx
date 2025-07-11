@@ -3,13 +3,19 @@ import { Stack, router, useLocalSearchParams } from 'expo-router';
 import FloatingLabelInput from '../../components/FloatingLabelInput';
 import React, { useState, useEffect, use, useRef } from 'react';
 import ShortAnswer from '../../components/short-answer';
-type ElementType = { type: string | string[]; id: number };
+type ElementType = { type: string | string[]; id:number };
+
+
 
 export default function CreateFormScreen() {
 
   const { fieldType, ids } = useLocalSearchParams();
   const [elements, setElements] = useState<ElementType[]>([]);
-  const [countelements, setCountElements] = useState(0);
+  const [countelements, setCountElements] = useState(1);
+  const handleDeleteQuestion = (id: number) => {
+    setElements(prevElements => prevElements.filter(el => el.id !== id));
+    setCountElements(countelements => countelements - 1);
+  };
   // const prevElements = useRef<ElementType[]>([]);
 
   useEffect(() => {
@@ -24,11 +30,11 @@ export default function CreateFormScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ids]);
 
-  const renderElement = (element: ElementType) => {
+  const renderElement = (element: ElementType & { index: number }) => {
     switch (element.type) {
       case 'Short Answer':
         console.log('Rendering Short Answer Element with ID:', element.id);
-        return <ShortAnswer id={element.id}/>;
+        return <ShortAnswer id={element.id} index={element.index} onDelete={handleDeleteQuestion}/>;
       case 'Long Answer':
         return <Text>Long Answer Component</Text>;
       case 'multiple-choice':
@@ -67,9 +73,9 @@ export default function CreateFormScreen() {
           />
         </View>
         <ScrollView style={{ width: '100%', backgroundColor:'rgba(0, 0, 0, 0.5)' }} contentContainerStyle={{ padding: 20 }}>
-          {elements.map((element) => (
+          {elements.map((element, index) => (
             <View key={element.id} style={styles.questioncontainer}>
-              {renderElement(element)}
+              {renderElement({ ...element, index })}
             </View>
           ))}
         </ScrollView>
